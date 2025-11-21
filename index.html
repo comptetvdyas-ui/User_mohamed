@@ -1,196 +1,911 @@
-<!doctype html>
-<html lang="fr">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>AUXÍLIO MOHAX</title>
+  <meta charset="UTF-8">
+  <title>Mohamed - Painel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body{
+    *{
+      box-sizing:border-box;
       margin:0;
       padding:0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    body{
       background:#000;
-      color:#22FF66;
-      font-family: monospace;
-      text-transform:uppercase;
-      overflow:hidden;
+      color:#fff;
+      min-height:100vh;
     }
-    h1{text-align:center;text-shadow:0 0 8px #22FF66;}
-    .panel, .login-box{
-      padding:20px;
-      border:1px solid #22FF66;
-      border-radius:10px;
-      background:rgba(0,30,0,0.85);
-      max-width:500px;
-      margin:40px auto;
-      position:relative;
-      z-index:1;
-    }
-    label{display:block;margin-top:15px}
-    input[type=range]{width:100%}
-    input[type=text], input[type=password]{
+
+    /* ---------- LOGIN STYLE ---------- */
+
+    #loginScreen{
       width:100%;
-      padding:8px;
-      margin-top:5px;
-      border-radius:5px;
-      border:1px solid #22FF66;
-      background:#001210;
-      color:#22FF66;
-      text-transform:uppercase;
-      box-sizing:border-box;
+      max-width:480px;
+      margin:0 auto;
+      min-height:100vh;
+      display:flex;               /* sera changé en 'none' quand on passera au menu */
+      align-items:center;
+      justify-content:center;
+      padding:20px 14px;
+      background:#02030a;
+      background-image: radial-gradient(circle at top, #10204a 0, transparent 60%);
     }
-    .value{font-size:12px;color:#A8EFC0}
-    .button{
-      display:block;
-      margin-top:15px;
-      padding:12px;
-      background:#22FF66;
-      color:#001210;
-      text-align:center;
-      font-weight:bold;
-      border-radius:8px;
-      text-decoration:none;
-      cursor:pointer;
+
+    .login-wrapper{
+      width:100%;
     }
-    #status{
-      margin-top:15px;
-      padding:10px;
-      background:#003300;
-      border:1px solid #22FF66;
+
+    .login-toast{
+      background:#07140b;
+      border-radius:14px;
+      padding:8px 12px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:10px;
+      border:1px solid #199b38;
+      box-shadow:0 0 10px rgba(0,0,0,0.8);
+      font-size:13px;
+    }
+    .login-toast.hidden{display:none;}
+
+    .login-toast-icon{
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      background:#199b38;
+    }
+
+    .login-card{
+      width:100%;
+      background:#050914;
+      border-radius:22px;
+      border:1px solid #242a3a;
+      padding:18px 16px 20px;
+      box-shadow:0 0 22px rgba(0,0,0,0.9);
+    }
+
+    .login-profile{
       text-align:center;
+      margin-bottom:16px;
+    }
+
+    .login-avatar-wrap{
+      display:inline-flex;
+      padding:3px;
+      border-radius:50%;
+      background: radial-gradient(circle, #1e6bff, #000);
+      box-shadow:0 0 16px rgba(46,115,255,0.8);
+    }
+
+    .login-avatar{
+      width:70px;
+      height:70px;
+      border-radius:50%;
+      background-size:cover;
+      background-position:center;
+      background-image:url("https://i.postimg.cc/Z5g4c7yw/a610acda-2d1e-4bf2-ac7e-46336cd9b097.jpg");
+    }
+
+    .login-name{
+      margin-top:8px;
+      font-size:18px;
+      font-weight:600;
+      color:#3b82ff;
+    }
+
+    .login-subtitle{
+      margin-top:3px;
       font-size:12px;
-      display:none;
+      color:#a9b1c8;
     }
-    .error{
+
+    .login-label{
+      font-size:13px;
+      margin-bottom:4px;
       margin-top:10px;
-      color:#FF5555;
+    }
+
+    .login-input-box{
+      background:#02040b;
+      border-radius:12px;
+      border:1px solid #2a3040;
+      padding:8px 10px;
+      margin-bottom:10px;
+    }
+
+    .login-input{
+      width:100%;
+      border:none;
+      background:transparent;
+      color:#fff;
+      font-size:13px;
+      outline:none;
+    }
+
+    .login-btn-main{
+      width:100%;
+      padding:11px;
+      border-radius:18px;
+      border:none;
+      background:#215dff;
+      color:#fff;
+      font-weight:600;
+      font-size:14px;
+      cursor:pointer;
+      margin-top:6px;
+      transition:opacity .2s;
+    }
+    .login-btn-main.disabled{
+      opacity:0.6;
+      cursor:default;
+    }
+
+    .login-msg{
+      margin-top:8px;
+      font-size:12px;
+      min-height:16px;
+      text-align:center;
+    }
+    .login-msg.error{color:#ff395e;}
+    .login-msg.ok{color:#39c96a;}
+
+    .key-info{
+      margin-top:14px;
+      background:#050b08;
+      border-radius:14px;
+      border:1px solid #1e3a23;
+      padding:10px 10px 8px;
       font-size:12px;
     }
-    canvas{
+    .key-info-title{
+      color:#7ed87e;
+      margin-bottom:4px;
+      font-weight:600;
+    }
+    .key-date{
+      color:#5ef45e;
+      margin-bottom:2px;
+    }
+    .key-remaining{
+      color:#e0e0e0;
+    }
+
+    /* ---------- MAIN APP (menu) ---------- */
+
+    #mainApp{
+      width:100%;
+      max-width:480px;
+      margin:0 auto;
+      min-height:100vh;
+      display:none;             /* sera mis à 'block' après login */
+      padding:16px 14px 24px;
+      background:#000;
+    }
+
+    .profile {
+      text-align: center;
+      margin-bottom: 18px;
+      margin-top: 16px;
+    }
+
+    .avatar-wrapper {
+      display: inline-flex;
+      padding: 3px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #1e6bff, #000);
+      box-shadow: 0 0 16px rgba(46,115,255,0.8);
+    }
+
+    .avatar {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      background-image: url("https://i.postimg.cc/Z5g4c7yw/a610acda-2d1e-4bf2-ac7e-46336cd9b097.jpg");
+    }
+
+    .profile-name {
+      margin-top: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #3b82ff;
+    }
+
+    .profile-copy {
+      margin-top: 3px;
+      font-size: 12px;
+      color: #aaaaaa;
+    }
+
+    .code-info {
+      margin-top: 2px;
+      font-size: 12px;
+      color: #a9b1ff;
+    }
+
+    .time-left {
+      margin-top: 2px;
+      font-size: 12px;
+      color: #ffd86a;
+    }
+
+    .tabs {
+      display: flex;
+      margin-top: 18px;
+      margin-bottom: 16px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #0c0f1a;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px 0;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tab.active {
+      background: #215dff;
+      color: #ffffff;
+    }
+
+    .tab:not(.active) {
+      background: #141821;
+      color: #bbbbbb;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .card-option {
+      background: #050914;
+      border-radius: 18px;
+      border: 1px solid #242a3a;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-box {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg,#0035ff,#00146b);
+      flex-shrink: 0;
+    }
+
+    .opt-text {
+      flex: 1;
+    }
+
+    .opt-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .opt-sub {
+      font-size: 11px;
+      color: #acb3d5;
+      margin-top: 3px;
+    }
+
+    .switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #202535;
+      border-radius: 999px;
+      transition: 0.3s;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      top: 3px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
+    .switch input:checked + .slider {
+      background-color: #2364ff;
+    }
+
+    .switch input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    .bottom-buttons {
+      margin-top: 16px;
+    }
+
+    .main-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 22px;
+      border: none;
+      margin-bottom: 8px;
+      background: #215dff;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .main-btn:last-child {
+      margin-bottom: 0;
+      background: #1333a2;
+    }
+
+    .small-btn {
+      width: 100%;
+      padding: 8px;
+      border-radius: 18px;
+      border: 1px solid #333a50;
+      background: #050914;
+      color: #b6bedf;
+      font-size: 12px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .info-card {
+      background: #171727;
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      border: 2px solid #7514b5;
+    }
+
+    .info-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: #d121ff;
+      margin-bottom: 6px;
+    }
+
+    .info-value {
+      font-size: 14px;
+      color: #ffffff;
+    }
+
+    .info-msg {
+      margin-top: 8px;
+      font-size: 12px;
+      min-height: 16px;
+      text-align: center;
+      color:#ff395e;
+    }
+
+    /* OVERLAY MODALS */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+    }
+    .modal {
+      background: #101015;
+      padding: 20px;
+      border-radius: 16px;
+      width: 80%;
+      max-width: 280px;
+      text-align: center;
+      box-shadow: 0 0 25px rgba(0,0,0,0.8);
+    }
+    .modal-title {
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+    .modal-text {
+      font-size: 13px;
+      margin-bottom: 18px;
+      line-height: 1.4;
+    }
+    .modal-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn {
+      padding: 8px;
+      border-radius: 18px;
+      border: none;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .btn-primary {
+      background: #3b9cff;
+      color: #fff;
+    }
+    .btn-secondary {
+      background: #30303a;
+      color: #fff;
+    }
+    .loading-bar {
+      width: 100%;
+      height: 4px;
+      background: #30303a;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+    .loading-bar-inner {
+      height: 100%;
+      background: #ffffff;
+      width: 0%;
+      animation: loading 3s linear forwards;
+    }
+    @keyframes loading {
+      from { width: 0%; }
+      to   { width: 100%; }
+    }
+    .success .modal-footer {
+      margin-top: 14px;
+    }
+    .success-ok {
+      background: #39c96a;
+      color: #fff;
+      padding: 8px 0;
+      width: 100%;
+      border: none;
+      border-radius: 18px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* toast top pour "Validando chave..." */
+    #topValidando{
       position:fixed;
-      top:0;left:0;
-      width:100%;height:100%;
-      z-index:0;
+      top:12px;
+      left:50%;
+      transform:translateX(-50%);
+      background:#071225;
+      border-radius:14px;
+      padding:8px 14px;
+      font-size:13px;
+      border:1px solid #2850ff;
+      box-shadow:0 0 12px rgba(0,0,0,0.8);
+      display:none;
+      z-index:30;
     }
   </style>
 </head>
 <body>
-<canvas id="bg"></canvas>
 
-<!-- LOGIN -->
-<div class="login-box" id="login-box">
-  <h1>AUXÍLIO MOHAX</h1>
-  <form id="login-form">
-    <label>UTILISATEUR</label>
-    <input type="text" id="login-user" placeholder="USUÁRIO">
+  <!-- Toast -->
+  <div id="topValidando">Validando chave...</div>
 
-    <label>MOT DE PASSE</label>
-    <input type="password" id="login-pass" placeholder="********">
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen">
+    <div class="login-wrapper">
 
-    <div class="button" onclick="attemptLogin()">ENTRAR</div>
-    <div class="error" id="login-error" style="display:none;"></div>
-  </form>
-</div>
+      <div id="loginToast" class="login-toast hidden">
+        <div class="login-toast-icon"></div>
+        <div>Acesso liberado!</div>
+      </div>
 
-<!-- PANEL -->
-<div class="panel" id="main-panel" style="display:none;">
-  <h1>AUXÍLIO MOHAX</h1>
+      <div class="login-card">
+        <div class="login-profile">
+          <div class="login-avatar-wrap">
+            <div class="login-avatar"></div>
+          </div>
+          <div class="login-name">Mohamed</div>
+          <div class="login-subtitle">Digite sua Key para continuar</div>
+        </div>
 
-  <label>SENSIBILIDADE MIRA</label>
-  <input type="range" min="0" max="10" value="5"
-         oninput="this.nextElementSibling.innerText='VALOR: '+this.value">
-  <div class="value">VALOR: 5</div>
+        <div class="login-label">Chave de Acesso</div>
+        <div class="login-input-box">
+          <input id="codeInput" class="login-input" placeholder="Ex: MOHD-FF-01" autocomplete="off">
+        </div>
 
-  <label>0 DELEY NO TOQUE</label>
-  <input type="range" min="0" max="10" value="0"
-         oninput="this.nextElementSibling.innerText='VALOR: '+this.value">
-  <div class="value">VALOR: 0</div>
+        <button id="loginBtn" class="login-btn-main">VALIDAR KEY</button>
+        <div id="loginMsg" class="login-msg"></div>
 
-  <label>ESTABILIZAR MIRA</label>
-  <input type="range" min="0" max="10" value="0"
-         oninput="this.nextElementSibling.innerText='VALOR: '+this.value">
-  <div class="value">VALOR: 0</div>
+        <div id="keyInfo" class="key-info" style="display:none;">
+          <div class="key-info-title">VALIDADE DA KEY</div>
+          <div id="keyDate" class="key-date"></div>
+          <div id="keyRemaining" class="key-remaining"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <a class="button" onclick="ativarOtimizacao()">OTIMIZAR JOGO</a>
-  <a class="button" onclick="abrirAppFreeFire()">ABRIR FREE FIRE</a>
-  <a class="button" onclick="abrirAppFreeFireMax()">ABRIR FREE FIRE MAX</a>
-  
-  <div id="status">FUNÇÃO ATIVADA!</div>
-</div>
+  <!-- MAIN APP -->
+  <div id="mainApp">
+    <div class="profile">
+      <div class="avatar-wrapper">
+        <div class="avatar"></div>
+      </div>
+      <div class="profile-name">Mohamed</div>
+      <div class="profile-copy">copyright : Mohamed</div>
+      <div class="code-info">Código usado: <span id="usedCode"></span></div>
+      <div class="time-left" id="timeLeft">Tempo restante: —</div>
+    </div>
 
-<script>
-  // LOGIN FIXE : MohaX / 1
-  const FIXED_USER = "MOHAX";
-  const FIXED_PASS = "1";
+    <div class="tabs">
+      <div class="tab active" data-tab="funcoes">Funções</div>
+      <div class="tab" data-tab="info">Info</div>
+    </div>
 
-  function attemptLogin(){
-    const userInput = document.getElementById("login-user").value.toUpperCase().trim();
-    const passInput = document.getElementById("login-pass").value.trim();
-    const errorBox = document.getElementById("login-error");
+    <div class="tab-content active" id="tab-funcoes">
+      <div class="section-title">Configurações</div>
 
-    if (userInput !== FIXED_USER || passInput !== FIXED_PASS){
-      errorBox.style.display = "block";
-      errorBox.innerText = "LOGIN OU MOT DE PASSE INVALIDE.";
-      return;
+      <div class="card-option" data-feature="Melhorar Mira Scope">
+        <div class="icon-box"></div>
+        <div class="opt-text">
+          <div class="opt-title">Melhorar Mira Scope</div>
+          <div class="opt-sub">Melhora a mira quando aberta.</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" class="toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="card-option" data-feature="Calibrar Sensibilidade">
+        <div class="icon-box"></div>
+        <div class="opt-text">
+          <div class="opt-title">Calibrar Sensibilidade</div>
+          <div class="opt-sub">Melhora a sua sensibilidade.</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" class="toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="card-option" data-feature="Diminuir Recuo">
+        <div class="icon-box"></div>
+        <div class="opt-text">
+          <div class="opt-title">Diminuir Recuo</div>
+          <div class="opt-sub">Diminui o recuo de qualquer arma.</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" class="toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="card-option" data-feature="Aumentar Precisão">
+        <div class="icon-box"></div>
+        <div class="opt-text">
+          <div class="opt-title">Aumentar Precisão</div>
+          <div class="opt-sub">Aumenta a precisão de qualquer arma.</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" class="toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="bottom-buttons">
+        <button class="main-btn" id="btnFreeFireNormal">Abrir Free Fire Normal</button>
+        <button class="main-btn" id="btnFreeFireMax">Abrir Free Fire MAX</button>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-info">
+      <div class="info-card">
+        <div class="info-label">Criado por:</div>
+        <div class="info-value">Mhd</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">Créditos a:</div>
+        <div class="info-value">mohamedffz</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">Modelo do telefone:</div>
+        <div class="info-value">iPhone</div>
+      </div>
+
+      <button id="btnReset" class="small-btn">Trocar código / sair</button>
+      <div id="infoMsg" class="info-msg"></div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+  </div>
+
+  <script>
+    // ---- CODES ----
+    const VALID_CODES = ["MOHD-FF-01","MOHD-FF-02","MOHD-FF-03","MOHD-FF-04","MOHD-FF-05"];
+    const VALIDITY_MS = 25*24*60*60*1000;
+    const STORAGE_KEY = "mhd_panel_access_v1";
+
+    const loginScreen=document.getElementById("loginScreen");
+    const mainApp=document.getElementById("mainApp");
+
+    const loginToast=document.getElementById("loginToast");
+    const codeInput=document.getElementById("codeInput");
+    const loginBtn=document.getElementById("loginBtn");
+    const loginMsg=document.getElementById("loginMsg");
+    const keyInfoBox=document.getElementById("keyInfo");
+    const keyDateSpan=document.getElementById("keyDate");
+    const keyRemSpan=document.getElementById("keyRemaining");
+    const topValidando=document.getElementById("topValidando");
+
+    const usedCodeSpan=document.getElementById("usedCode");
+    const timeLeftSpan=document.getElementById("timeLeft");
+    const btnReset=document.getElementById("btnReset");
+    const infoMsg=document.getElementById("infoMsg");
+
+    let countdownInterval=null;
+
+    function saveAccess(code,activatedAt,expiresAt){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({code,activatedAt,expiresAt}));
+    }
+    function loadAccess(){
+      const raw=localStorage.getItem(STORAGE_KEY);
+      if(!raw) return null;
+      try{return JSON.parse(raw);}catch(e){return null;}
+    }
+    function clearAccess(){localStorage.removeItem(STORAGE_KEY);}
+
+    function formatDateTime(ts){
+      const d=new Date(ts);
+      const dd=String(d.getDate()).padStart(2,"0");
+      const mm=String(d.getMonth()+1).padStart(2,"0");
+      const yy=d.getFullYear();
+      const hh=String(d.getHours()).padStart(2,"0");
+      const mi=String(d.getMinutes()).padStart(2,"0");
+      return `${dd}/${mm}/${yy} às ${hh}:${mi}`;
+    }
+    function formatTimeRemaining(ms){
+      if(ms<=0) return "0d 0h 0m 0s restantes";
+      const s=Math.floor(ms/1000);
+      const d=Math.floor(s/(24*3600));
+      const h=Math.floor((s%(24*3600))/3600);
+      const m=Math.floor((s%3600)/60);
+      const sec=s%60;
+      return `${d}d ${h}h ${m}m ${sec}s restantes`;
     }
 
-    document.getElementById("login-box").style.display = "none";
-    document.getElementById("main-panel").style.display = "block";
-  }
-
-  // Status
-  function ativarOtimizacao(){
-    const box=document.getElementById("status");
-    box.style.display="block";
-    box.innerText="FUNÇÃO OTIMIZAR JOGO ATIVADA!";
-    setTimeout(()=>{box.style.display="none";},3000);
-  }
-
-  // OUVERTURE DIRECTE DES APKS
-  function abrirAppFreeFire(){
-    window.location.href = "freefire://";
-  }
-
-  function abrirAppFreeFireMax(){
-    window.location.href = "freefiremax://";
-  }
-
-  // MATRIX EFFECT
-  const canvas=document.getElementById("bg");
-  const ctx=canvas.getContext("2d");
-
-  function resizeCanvas(){
-    canvas.height=window.innerHeight;
-    canvas.width=window.innerWidth;
-  }
-  resizeCanvas();
-  window.addEventListener("resize", resizeCanvas);
-
-  const letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  const fontSize=14;
-  let columns=canvas.width/fontSize;
-  let drops=[];
-
-  function initDrops(){
-    columns=canvas.width/fontSize;
-    drops=[];
-    for(let x=0;x<columns;x++) drops[x]=1;
-  }
-  initDrops();
-  window.addEventListener("resize", initDrops);
-
-  function draw(){
-    ctx.fillStyle="rgba(0,0,0,0.05)";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle="#22FF66";
-    ctx.font=fontSize+"px monospace";
-    for(let i=0;i<drops.length;i++){
-      const text=letters.charAt(Math.floor(Math.random()*letters.length));
-      ctx.fillText(text,i*fontSize,drops[i]*fontSize);
-      if(drops[i]*fontSize>canvas.height&&Math.random()>0.975) drops[i]=0;
-      drops[i]++;
+    function startCountdown(expiresAt){
+      if(countdownInterval) clearInterval(countdownInterval);
+      function tick(){
+        const now=Date.now();
+        const diff=expiresAt-now;
+        if(diff<=0){
+          timeLeftSpan.textContent="Tempo restante: expirado";
+          clearAccess();
+          if(countdownInterval) clearInterval(countdownInterval);
+          infoMsg.textContent="Seu código expirou. Entre com um novo código.";
+          showLogin();
+          loginMsg.textContent="Seu código expirou. Entre com um novo código.";
+          loginMsg.className="login-msg error";
+          return;
+        }
+        timeLeftSpan.textContent="Tempo restante: "+formatTimeRemaining(diff);
+      }
+      tick();
+      countdownInterval=setInterval(tick,1000);
     }
-  }
-  setInterval(draw,35);
-</script>
+
+    function showLogin(){
+      loginScreen.style.display="flex";
+      mainApp.style.display="none";
+    }
+    function showMain(data){
+      loginScreen.style.display="none";
+      mainApp.style.display="block";
+      usedCodeSpan.textContent=data.code;
+      infoMsg.textContent="";
+      startCountdown(data.expiresAt);
+    }
+
+    function initAuth(){
+      const data=loadAccess();
+      if(!data){ showLogin();return; }
+      const now=Date.now();
+      if(now>=data.expiresAt){
+        clearAccess();
+        showLogin();
+      }else{
+        showMain(data);
+      }
+    }
+
+    // LOGIN
+    loginBtn.addEventListener("click",()=>{
+      const code=codeInput.value.trim();
+      loginMsg.textContent="";
+      keyInfoBox.style.display="none";
+      loginToast.classList.add("hidden");
+
+      if(!code){
+        loginMsg.textContent="Digite um código.";
+        loginMsg.className="login-msg error";
+        return;
+      }
+      if(!VALID_CODES.includes(code)){
+        loginMsg.textContent="Código inválido ou não cadastrado.";
+        loginMsg.className="login-msg error";
+        return;
+      }
+
+      const now=Date.now();
+      const expiresAt=now+VALIDITY_MS;
+
+      keyDateSpan.textContent=formatDateTime(expiresAt);
+      keyRemSpan.textContent=formatTimeRemaining(expiresAt-now);
+      keyInfoBox.style.display="block";
+
+      loginBtn.textContent="VALIDANDO...";
+      loginBtn.classList.add("disabled");
+      loginBtn.disabled=true;
+      topValidando.style.display="block";
+
+      const tempInterval=setInterval(()=>{
+        const diff=expiresAt-Date.now();
+        keyRemSpan.textContent=formatTimeRemaining(diff);
+      },1000);
+
+      setTimeout(()=>{
+        clearInterval(tempInterval);
+        saveAccess(code,now,expiresAt);
+        topValidando.style.display="none";
+        loginToast.classList.remove("hidden");
+        loginMsg.textContent="Acesso liberado!";
+        loginMsg.className="login-msg ok";
+
+        // on bascule complètement sur le menu
+        showMain({code,activatedAt:now,expiresAt});
+
+        loginBtn.textContent="VALIDAR KEY";
+        loginBtn.classList.remove("disabled");
+        loginBtn.disabled=false;
+      },3000);
+    });
+
+    codeInput.addEventListener("keydown",e=>{
+      if(e.key==="Enter") loginBtn.click();
+    });
+
+    btnReset.addEventListener("click",()=>{
+      clearAccess();
+      if(countdownInterval) clearInterval(countdownInterval);
+      showLogin();
+      infoMsg.textContent="";
+      loginMsg.textContent="Você saiu do painel. Entre com outro código.";
+      loginMsg.className="login-msg ok";
+    });
+
+    // TABS
+    const tabs=document.querySelectorAll('.tab');
+    const tabFuncoes=document.getElementById('tab-funcoes');
+    const tabInfo=document.getElementById('tab-info');
+    const tabContents={funcoes:tabFuncoes, info:tabInfo};
+
+    tabs.forEach(tab=>{
+      tab.addEventListener('click',()=>{
+        const target=tab.dataset.tab;
+        tabs.forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+        Object.keys(tabContents).forEach(k=>{
+          tabContents[k].classList.toggle('active',k===target);
+        });
+      });
+    });
+
+    // overlay pour les options
+    const options=document.querySelectorAll('.card-option');
+    const overlay=document.getElementById('overlay');
+
+    options.forEach(opt=>{
+      const toggle=opt.querySelector('.toggle');
+      toggle.addEventListener('change',()=>{
+        const feature=opt.getAttribute('data-feature');
+        if(toggle.checked){
+          toggle.checked=false;
+          showConfirmModal(feature,()=>{
+            showLoadingModal(feature,()=>{
+              toggle.checked=true;
+            });
+          },()=>{ toggle.checked=false; });
+        }
+      });
+    });
+
+    function clearOverlay(){
+      overlay.innerHTML='';
+      overlay.style.display='none';
+    }
+    function showConfirmModal(featureName,onConfirm,onCancel){
+      overlay.style.display='flex';
+      overlay.innerHTML=`
+        <div class="modal">
+          <div class="modal-title">Confirmação</div>
+          <div class="modal-text">
+            Tem certeza de que deseja ativar<br><strong>${featureName}</strong>?
+          </div>
+          <div class="modal-buttons">
+            <button class="btn btn-primary" id="btnConfirmar">Confirmar</button>
+            <button class="btn btn-secondary" id="btnCancelar">Cancelar</button>
+          </div>
+        </div>`;
+      document.getElementById('btnConfirmar').onclick=()=>{ if(onConfirm) onConfirm(); };
+      document.getElementById('btnCancelar').onclick=()=>{
+        clearOverlay();
+        if(onCancel) onCancel();
+      };
+    }
+    function showLoadingModal(featureName,onDone){
+      overlay.innerHTML=`
+        <div class="modal">
+          <div class="modal-title">Aguarde</div>
+          <div class="loading-bar">
+            <div class="loading-bar-inner"></div>
+          </div>
+        </div>`;
+      setTimeout(()=>{ showSuccessModal(featureName,onDone); },3000);
+    }
+    function showSuccessModal(featureName,onDone){
+      overlay.innerHTML=`
+        <div class="modal success">
+          <div class="modal-title">Sucesso</div>
+          <div class="modal-text">
+            ${featureName} foi ativado com sucesso!
+          </div>
+          <div class="modal-footer">
+            <button class="success-ok" id="btnOk">OK</button>
+          </div>
+        </div>`;
+      document.getElementById('btnOk').onclick=()=>{
+        clearOverlay();
+        if(onDone) onDone();
+      };
+    }
+
+    // ouvrir Free Fire
+    function abrirAppFreeFire(){ window.location.href="freefire://"; }
+    function abrirAppFreeFireMax(){ window.location.href="freefiremax://"; }
+    document.getElementById('btnFreeFireNormal').addEventListener('click',abrirAppFreeFire);
+    document.getElementById('btnFreeFireMax').addEventListener('click',abrirAppFreeFireMax);
+
+    // Lancement
+    initAuth();
+  </script>
 </body>
 </html>
