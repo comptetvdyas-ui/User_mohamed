@@ -1,196 +1,329 @@
-<!doctype html>
-<html lang="fr">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>AUXÍLIO MOHAX</title>
+  <meta charset="UTF-8">
+  <title>Auxílio de Mira - bk7santos7</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body{
+    *{
+      box-sizing:border-box;
       margin:0;
       padding:0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body{
       background:#000;
-      color:#22FF66;
-      font-family: monospace;
-      text-transform:uppercase;
-      overflow:hidden;
+      color:#fff;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
     }
-    h1{text-align:center;text-shadow:0 0 8px #22FF66;}
-    .panel, .login-box{
-      padding:20px;
-      border:1px solid #22FF66;
-      border-radius:10px;
-      background:rgba(0,30,0,0.85);
-      max-width:500px;
-      margin:40px auto;
-      position:relative;
-      z-index:1;
-    }
-    label{display:block;margin-top:15px}
-    input[type=range]{width:100%}
-    input[type=text], input[type=password]{
+
+    /* Conteneur global */
+    .aim-container{
       width:100%;
-      padding:8px;
-      margin-top:5px;
-      border-radius:5px;
-      border:1px solid #22FF66;
-      background:#001210;
-      color:#22FF66;
-      text-transform:uppercase;
-      box-sizing:border-box;
+      max-width:360px;
+      margin:0 auto;
+      background:#050506;
+      border-radius:22px;
+      border:1px solid #ff003388;
+      padding:18px 16px 16px;
+      box-shadow:0 0 24px rgba(255,0,64,0.35);
+      position:relative;
     }
-    .value{font-size:12px;color:#A8EFC0}
-    .button{
-      display:block;
-      margin-top:15px;
-      padding:12px;
-      background:#22FF66;
-      color:#001210;
+
+    .aim-title{
       text-align:center;
-      font-weight:bold;
-      border-radius:8px;
-      text-decoration:none;
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:10px;
+      letter-spacing:1px;
+    }
+
+    /* Onglets Funções / Info */
+    .aim-tabs{
+      display:flex;
+      justify-content:center;
+      margin-bottom:14px;
+      gap:8px;
+    }
+
+    .aim-tab-btn{
+      padding:6px 16px;
+      border-radius:18px;
+      border:none;
+      font-size:13px;
+      font-weight:600;
       cursor:pointer;
+      background:#1b1b1f;
+      color:#ffffffaa;
     }
-    #status{
-      margin-top:15px;
-      padding:10px;
-      background:#003300;
-      border:1px solid #22FF66;
+    .aim-tab-btn.active{
+      background:#ff0048;
+      color:#fff;
+    }
+
+    /* Liste d’options */
+    .options-list{
+      margin-bottom:12px;
+    }
+
+    .option-row{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      margin-bottom:6px;
+      cursor:pointer;
+      font-size:13px;
+      user-select:none;
+    }
+
+    /* Checkbox custom */
+    .opt-check{
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      border:2px solid #ff0048;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-shrink:0;
+      position:relative;
+    }
+
+    .opt-check-inner{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:transparent;
+      transition:background .18s;
+    }
+
+    .option-row span.label{
+      font-size:14px;
+      transition:color .18s;
+    }
+
+    .option-row.active .opt-check-inner{
+      background:#ff0048;
+    }
+
+    .option-row.active span.label{
+      color:#ff0048;
+    }
+
+    /* Slider précision */
+    .precision-label{
+      margin-top:4px;
+      margin-bottom:4px;
+      font-size:13px;
+    }
+
+    .slider-row{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin-bottom:10px;
+    }
+
+    .slider-row input[type=range]{
+      width:100%;
+      -webkit-appearance:none;
+      background:transparent;
+    }
+    .slider-row input[type=range]::-webkit-slider-runnable-track{
+      height:6px;
+      border-radius:4px;
+      background:#ff0048;
+    }
+    .slider-row input[type=range]::-webkit-slider-thumb{
+      -webkit-appearance:none;
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      background:#ddd;
+      margin-top:-5px;
+    }
+    .slider-row input[type=range]::-moz-range-track{
+      height:6px;
+      border-radius:4px;
+      background:#ff0048;
+    }
+    .slider-row input[type=range]::-moz-range-thumb{
+      width:16px;
+      height:16px;
+      border-radius:50%;
+      background:#ddd;
+      border:none;
+    }
+
+    /* Select mode */
+    .select-mode{
+      width:100%;
+      padding:8px 10px;
+      border-radius:8px;
+      border:none;
+      background:#16161a;
+      color:#fff;
+      font-size:13px;
+      margin-bottom:14px;
+    }
+
+    /* Bouton injection */
+    .inject-btn{
+      width:100%;
+      padding:11px;
+      border-radius:20px;
+      border:none;
+      background:#ff0048;
+      color:#fff;
+      font-weight:700;
+      font-size:13px;
+      cursor:pointer;
+      letter-spacing:0.5px;
+    }
+
+    /* Info tab */
+    .info-text{
+      font-size:12px;
+      line-height:1.4;
+      margin-top:6px;
+    }
+
+    /* Footer */
+    .footer-tag{
       text-align:center;
-      font-size:12px;
-      display:none;
-    }
-    .error{
-      margin-top:10px;
-      color:#FF5555;
-      font-size:12px;
-    }
-    canvas{
-      position:fixed;
-      top:0;left:0;
-      width:100%;height:100%;
-      z-index:0;
+      margin-top:8px;
+      font-size:11px;
+      color:#c0c0c0;
     }
   </style>
 </head>
 <body>
-<canvas id="bg"></canvas>
 
-<!-- LOGIN -->
-<div class="login-box" id="login-box">
-  <h1>AUXÍLIO MOHAX</h1>
-  <form id="login-form">
-    <label>UTILISATEUR</label>
-    <input type="text" id="login-user" placeholder="USUÁRIO">
+  <div class="aim-container">
+    <div class="aim-title">AUXÍLIO DE MIRA</div>
 
-    <label>MOT DE PASSE</label>
-    <input type="password" id="login-pass" placeholder="********">
+    <div class="aim-tabs">
+      <button class="aim-tab-btn active" data-tab="funcoes">Funções</button>
+      <button class="aim-tab-btn" data-tab="info">Info</button>
+    </div>
 
-    <div class="button" onclick="attemptLogin()">ENTRAR</div>
-    <div class="error" id="login-error" style="display:none;"></div>
-  </form>
-</div>
+    <!-- Onglet Funções -->
+    <div id="aim-funcoes">
+      <div class="options-list">
+        <div class="option-row" data-opt="max">
+          <div class="opt-check">
+            <div class="opt-check-inner"></div>
+          </div>
+          <span class="label">Maximo de Precisão</span>
+        </div>
+        <div class="option-row" data-opt="norecoil">
+          <div class="opt-check">
+            <div class="opt-check-inner"></div>
+          </div>
+          <span class="label">Norecoil</span>
+        </div>
+        <div class="option-row" data-opt="melhor">
+          <div class="opt-check">
+            <div class="opt-check-inner"></div>
+          </div>
+          <span class="label">Melhor Mira</span>
+        </div>
+        <div class="option-row" data-opt="calibrar">
+          <div class="opt-check">
+            <div class="opt-check-inner"></div>
+          </div>
+          <span class="label">Calibrar Mira</span>
+        </div>
+        <div class="option-row" data-opt="rastreamento">
+          <div class="opt-check">
+            <div class="opt-check-inner"></div>
+          </div>
+          <span class="label">Rastreamento do cabeça</span>
+        </div>
+        <div class="option-row" data-opt="pixels">
+          <div class="opt-check">
+            <div class="opt-check-inner"></div>
+          </div>
+          <span class="label">Eliminar pixels mortos</span>
+        </div>
+      </div>
 
-<!-- PANEL -->
-<div class="panel" id="main-panel" style="display:none;">
-  <h1>AUXÍLIO MOHAX</h1>
+      <div class="precision-label">
+        Precisão: <span id="precValue">0</span>
+      </div>
+      <div class="slider-row">
+        <input id="precSlider" type="range" min="0" max="10" step="1" value="0">
+      </div>
 
-  <label>SENSIBILIDADE MIRA</label>
-  <input type="range" min="0" max="10" value="5"
-         oninput="this.nextElementSibling.innerText='VALOR: '+this.value">
-  <div class="value">VALOR: 5</div>
+      <select class="select-mode" id="modeSelect">
+        <option>Auxílio Cabeça</option>
+        <option>Auxílio Corpo</option>
+        <option>Auxílio Full</option>
+      </select>
 
-  <label>0 DELEY NO TOQUE</label>
-  <input type="range" min="0" max="10" value="0"
-         oninput="this.nextElementSibling.innerText='VALOR: '+this.value">
-  <div class="value">VALOR: 0</div>
+      <button class="inject-btn" id="injectBtn">INJETAR FUNÇÕES NO JOGO</button>
+    </div>
 
-  <label>ESTABILIZAR MIRA</label>
-  <input type="range" min="0" max="10" value="0"
-         oninput="this.nextElementSibling.innerText='VALOR: '+this.value">
-  <div class="value">VALOR: 0</div>
+    <!-- Onglet Info -->
+    <div id="aim-info" style="display:none;">
+      <div class="info-text">
+        Criado por <b>Mhd</b> • Créditos: <b>mohamedffz</b>.<br>
+        Ative as opções desejadas, ajuste a precisão e clique em
+        <b>INJETAR FUNÇÕES NO JOGO</b> com o Free Fire aberto.
+      </div>
+    </div>
 
-  <a class="button" onclick="ativarOtimizacao()">OTIMIZAR JOGO</a>
-  <a class="button" onclick="abrirAppFreeFire()">ABRIR FREE FIRE</a>
-  <a class="button" onclick="abrirAppFreeFireMax()">ABRIR FREE FIRE MAX</a>
-  
-  <div id="status">FUNÇÃO ATIVADA!</div>
-</div>
+    <div class="footer-tag">bk7santos7</div>
+  </div>
 
-<script>
-  // LOGIN FIXE : MohaX / 1
-  const FIXED_USER = "MOHAX";
-  const FIXED_PASS = "1";
+  <script>
+    // ----- Onglets Funções / Info -----
+    const tabButtons = document.querySelectorAll(".aim-tab-btn");
+    const funcoesBox = document.getElementById("aim-funcoes");
+    const infoBox    = document.getElementById("aim-info");
 
-  function attemptLogin(){
-    const userInput = document.getElementById("login-user").value.toUpperCase().trim();
-    const passInput = document.getElementById("login-pass").value.trim();
-    const errorBox = document.getElementById("login-error");
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const tab = btn.dataset.tab;
+        if (tab === "funcoes") {
+          funcoesBox.style.display = "block";
+          infoBox.style.display = "none";
+        } else {
+          funcoesBox.style.display = "none";
+          infoBox.style.display = "block";
+        }
+      });
+    });
 
-    if (userInput !== FIXED_USER || passInput !== FIXED_PASS){
-      errorBox.style.display = "block";
-      errorBox.innerText = "LOGIN OU MOT DE PASSE INVALIDE.";
-      return;
+    // ----- Options cliquables (checkbox) -----
+    const optionRows = document.querySelectorAll(".option-row");
+    optionRows.forEach(row => {
+      row.addEventListener("click", () => {
+        row.classList.toggle("active");
+      });
+    });
+
+    // ----- Slider précision 0–10 -----
+    const precSlider = document.getElementById("precSlider");
+    const precValue  = document.getElementById("precValue");
+
+    precSlider.addEventListener("input", () => {
+      precValue.textContent = precSlider.value;
+    });
+
+    // ----- Bouton INJETAR → ouvrir Free Fire -----
+    function abrirAppFreeFire(){
+      window.location.href = "freefire://";
     }
 
-    document.getElementById("login-box").style.display = "none";
-    document.getElementById("main-panel").style.display = "block";
-  }
-
-  // Status
-  function ativarOtimizacao(){
-    const box=document.getElementById("status");
-    box.style.display="block";
-    box.innerText="FUNÇÃO OTIMIZAR JOGO ATIVADA!";
-    setTimeout(()=>{box.style.display="none";},3000);
-  }
-
-  // OUVERTURE DIRECTE DES APKS
-  function abrirAppFreeFire(){
-    window.location.href = "freefire://";
-  }
-
-  function abrirAppFreeFireMax(){
-    window.location.href = "freefiremax://";
-  }
-
-  // MATRIX EFFECT
-  const canvas=document.getElementById("bg");
-  const ctx=canvas.getContext("2d");
-
-  function resizeCanvas(){
-    canvas.height=window.innerHeight;
-    canvas.width=window.innerWidth;
-  }
-  resizeCanvas();
-  window.addEventListener("resize", resizeCanvas);
-
-  const letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  const fontSize=14;
-  let columns=canvas.width/fontSize;
-  let drops=[];
-
-  function initDrops(){
-    columns=canvas.width/fontSize;
-    drops=[];
-    for(let x=0;x<columns;x++) drops[x]=1;
-  }
-  initDrops();
-  window.addEventListener("resize", initDrops);
-
-  function draw(){
-    ctx.fillStyle="rgba(0,0,0,0.05)";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.fillStyle="#22FF66";
-    ctx.font=fontSize+"px monospace";
-    for(let i=0;i<drops.length;i++){
-      const text=letters.charAt(Math.floor(Math.random()*letters.length));
-      ctx.fillText(text,i*fontSize,drops[i]*fontSize);
-      if(drops[i]*fontSize>canvas.height&&Math.random()>0.975) drops[i]=0;
-      drops[i]++;
-    }
-  }
-  setInterval(draw,35);
-</script>
+    document.getElementById("injectBtn")
+      .addEventListener("click", abrirAppFreeFire);
+  </script>
 </body>
 </html>
